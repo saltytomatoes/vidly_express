@@ -3,6 +3,7 @@ const express = require('express');
 
 const app = express();
 const Joi = require('joi');
+const { valid } = require('joi/lib/types/object');
 const port = process.env.port || 3000;
 
 
@@ -40,10 +41,29 @@ app.post("/api/post", (req , res) => {
 
     if(error) return res.status(400).send(error.details[0].message);
 
-    data.push(req.body);
+    const newMovie = {id: data.length , name: req.body.name, genre: req.body.genre};
+    data.push(newMovie);
     res.send(data);
     
 });
+
+app.put('/api/update/:id', (req , res) => {
+    let movie = data.find( movie => movie.id === +req.params.id);
+
+    if(!movie) return res.status(404).send(`sorry! there is no movie with corresponding id: ${req.params.id}`);
+
+    const { error } = validateInput(req.body);
+    if(error) res.status(400).send(error.details[0].message);
+
+    console.log(movie);
+    console.log(req.body);
+
+    movie = req.body;
+    res.send(data);
+});
+
+
+
 
 
 
