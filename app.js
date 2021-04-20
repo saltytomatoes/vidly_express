@@ -53,12 +53,11 @@ app.put('/api/update/:id', (req , res) => {
     if(!movie) return res.status(404).send(`sorry! there is no movie with corresponding id: ${req.params.id}`);
 
     const { error } = validateInput(req.body);
-    if(error) res.status(400).send(error.details[0].message);
+    if(error) return res.status(400).send(error.details[0].message);
 
-    console.log(movie);
-    console.log(req.body);
 
-    movie = req.body;
+    movie.name = req.body.name;
+    movie.genre = req.body.genre;
     res.send(data);
 });
 
