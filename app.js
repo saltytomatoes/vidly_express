@@ -11,10 +11,21 @@ let data = [{ id:0, name: "fast and furious", genre: "action"},
             { id:1, name: "the minions", genre: "kids"},
             { id:2, name: "jumanji", genre: "comedy"}];
 
-app.get('/', (req , res) => {
+
+app.get('/api/all', (req , res) => {
     res.send(data);
 });
 
+app.get('/api/:id', (req , res) => {
+    let movie = data.find( movie => movie.id === +req.params.id);
+
+    if(!movie) {
+       res.status(404).send(`sorry! there is no movie with corresponding id: ${req.params.id}`);
+       return; 
+    }
+
+    res.send(movie);
+});
 
 
 
