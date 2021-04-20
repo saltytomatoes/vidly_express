@@ -34,7 +34,7 @@ app.get('/api/:id', (req , res) => {
 });
 
 
-
+// add new movie to the list
 app.post("/api/post", (req , res) => {
 
     const { error } = validateInput(req.body);
@@ -47,9 +47,10 @@ app.post("/api/post", (req , res) => {
     
 });
 
+//update an existing movie from the list 
 app.put('/api/update/:id', (req , res) => {
-    let movie = data.find( movie => movie.id === +req.params.id);
 
+    let movie = data.find( movie => movie.id === +req.params.id);
     if(!movie) return res.status(404).send(`sorry! there is no movie with corresponding id: ${req.params.id}`);
 
     const { error } = validateInput(req.body);
@@ -61,8 +62,16 @@ app.put('/api/update/:id', (req , res) => {
     res.send(data);
 });
 
+app.delete('/api/delete/:id', (req, res) => {
 
+    let movie = data.find( movie => movie.id === +req.params.id);
+    if(!movie) return res.status(404).send(`sorry! there is no movie with corresponding id: ${req.params.id}`);
 
+    let index = data.indexOf(movie);
+    data.splice(index,1);
+
+    res.send(data);
+});
 
 
 
