@@ -3,7 +3,7 @@ const Joi = require('joi');
 
 
 
-const router = express.router();
+const router = express.Router();
 
 let data = [{ id:0, name: "fast and furious", genre: "action"},
             { id:1, name: "the minions", genre: "kids"},
@@ -78,4 +78,6 @@ const validateInput = (movie) => {
 
     return Joi.validate(movie, schema);
 }
+
+module.exports = router;
 
