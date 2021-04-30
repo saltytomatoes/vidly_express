@@ -33,14 +33,12 @@ router.get('/:id', async (req , res) => {
 // add new movie to the list
 router.post("/post", (req , res) => {
 
-    //const { error } = validateInput(req.body);
-
-    //if(error) return res.status(400).send(error.details[0].message);
+    const { error } = validateInput(req.body);
+    if(error) return res.status(400).send(error.details[0].message);
 
     const newMovie = { name: req.body.name, genre: req.body.genre };
-    console.log(db.add(newMovie).message);
+    db.add(newMovie);
     res.send(newMovie);
-    
 });
 
 
@@ -48,29 +46,23 @@ router.post("/post", (req , res) => {
 
 
 //update an existing movie from the list 
-router.put('/update/:id', (req , res) => {
-
-    let movie = data.find( movie => movie.id === +req.params.id);
-    if(!movie) return res.status(404).send(`sorry! there is no movie with corresponding id: ${req.params.id}`);
-
+router.put('/update/:id', async(req , res) => {
+    
     const { error } = validateInput(req.body);
     if(error) return res.status(400).send(error.details[0].message);
-
-
-    movie.name = req.body.name;
-    movie.genre = req.body.genre;
-    res.send(data);
-});
-
-router.delete('/delete/:id', (req, res) => {
-
-    let movie = data.find( movie => movie.id === +req.params.id);
+    
+    const movie = await db.update(req.params.id, req.body);
     if(!movie) return res.status(404).send(`sorry! there is no movie with corresponding id: ${req.params.id}`);
 
-    let index = data.indexOf(movie);
-    data.splice(index,1);
+    res.send(movie);
+});
 
-    res.send(data);
+router.delete('/delete/:id', async (req, res) => {
+
+    let movie = await db.delete(req.params.id);
+    if(!movie) return res.status(404).send(`sorry! there is no movie with corresponding id: ${req.params.id}`);
+
+    res.send(movie);
 });
 
 

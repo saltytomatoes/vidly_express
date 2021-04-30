@@ -27,17 +27,12 @@ const db = {
     },
 
     update: async function(id, body) {
-        const movie = await Movie.find({_id: id});
+        const movie = await Movie.findByIdAndUpdate(id,{
+            name: body.name,
+            genre: body.genre
+        }, { new: true });
 
-        if(!movie) return new Error(`Sorry! there is no movie: ${id}`);
-
-        try {
-            if(body.name) movie.name = body.name;
-            if(body.genre) movie.genre = body.genre;
-            await movie.save();
-        } catch(ex) {
-            return ex;
-        }
+        return movie;
     },
 
     delete: async function(id) {

@@ -9,5 +9,4 @@ const genres = require('./routes/genres');
 app.use('/api', genres);
 
 
-
 app.listen(port, () => { console.log(`The server is listening on port ${port}...`) });
