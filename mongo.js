@@ -1,11 +1,4 @@
 const mongoose = require('mongoose');
-const DB_NAME = 'vidly';
-
-
-mongoose.connect(`mongodb://localhost/${DB_NAME}`)
-  .then(  () => console.log('Connected to mongo!') )
-  .catch( err => console.log('Error!', err.message ) );
-
 
 const movieSchema = mongoose.Schema({
     name: {type: String, required: true},

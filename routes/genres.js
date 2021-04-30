@@ -1,6 +1,6 @@
 const express = require('express');
 const Joi = require('joi');
-const db = require('./mongo');
+const db = require('../mongo');
 const router = express.Router();
 
 
