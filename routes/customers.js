@@ -1,24 +1,11 @@
 const mongoose = require('mongoose');
 const express = require('express');
 const router = express.Router();
-const Joi = require('joi');
-
-const customerSchema = mongoose.Schema({
-    name: {type: String, required: true},
-    isGold: {type: Boolean, default: false},
-    phone: {
-        type: String,
-        minlength: 10,
-        maxlength: 10
-    }
-});
-
-const Customer = mongoose.model('Customer', customerSchema);
+const {Customer, validate} = require('../models/Customers');
 
 
-
-router.get('/all', async (req , res) => {
-    const customer = await Customer.find();
+router.get('/', async (req , res) => {
+    const customer = await Customer.find().sort('name');
     res.send(customer);
 });
 
@@ -26,51 +13,59 @@ router.get('/all', async (req , res) => {
 
 
 router.get('/:id', async (req, res) => {
-    const customer = await Customer.find({_id: req.params.id });
+    const customer = await Customer.findById( req.params.id );
 
-    if(!customer) return res.status(404).send(`Sorry! there is no customer with id of ${req.params.id}`);
+    if(!customer) return res.status(404).send(`There is no ${req.params.id} customer, sorry.`);
+   
     res.send(customer);
 });
 
 
 
 
-router.post('/post', async (req, res) => {
-    const { error } = validateInput(req.body);
+router.post('/', async (req, res) => {
+    const { error } = validate(req.body);
     if(error) return res.status(400).send(error.details[0].message);
 
-    let customer = new Customer(req.body);
+    let customer = new Customer({
+        name: req.body.name,
+        isGold: req.body.isGold,
+        phone: req.body.phone
+    });
+
     customer = await customer.save();
     res.send(customer);
 });
 
 
 
-router.put('/update/:id', async (req , res) => {
+router.put('/:id', async (req , res) => {
 
-    const { error } = validateInput(req.body);
+    const { error } = validate(req.body);
     if(error) return res.status(400).send(error.details[0].message);
 
-    const customer = await Customer.findByIdAndUpdate(req.params.id, req.body, {new: true});
+    const customer = await Customer.findByIdAndUpdate(req.params.id, {
+        name: req.body.name,
+        isGold: req.body.isGold,
+        phone: req.body.phone
+    }, {new: true});
+
+    
+    if(!customer) return res.status(404).send(`There is no ${req.params.id} customer, sorry.`);
     res.send(customer);
 });
 
 
-router.delete('/delete/:id', async (req, res) => {
-    const deleted = await Customer.deleteOne({_id: req.params.id });
+
+
+
+router.delete('/:id', async (req, res) => {
+    const deleted = await Customer.findByIdAndRemove( req.params.id );
+
+    if(!deleted) return res.status(404).send(`There is no ${req.params.id} customer, sorry.`);
+    
     res.send(deleted);
 });
-
-
-// joi validation
-const validateInput = (customer) => {
-    const schema = {
-        name: Joi.string().required(),
-        phone: Joi.string().required().min(10).max(10),
-    }
-    return Joi.validate(customer, schema);
-}
-
 
 
 module.exports = router;
