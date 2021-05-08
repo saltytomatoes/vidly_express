@@ -6,6 +6,7 @@ const _ = require('lodash');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const config = require('config');
+const auth = require('../middleware/auth');
 
 
 
@@ -30,8 +31,15 @@ router.post('/', async(req, res) => {
     await newUser.save();
 
     
-    const token = jwt.sign({_id: newUser._id}, config.get('jwtPrivateKey'));
+    const token = newUser.generateAuthToken();
     res.header('x-auth-token',token).send(_.pick(newUser, ['name','email','_id']) );
+});
+
+
+
+router.get('/me', auth, async (req, res) => {
+    const user = await User.findById(req.user._id).select('-password');
+    res.send(user);
 });
 
 module.exports = router;

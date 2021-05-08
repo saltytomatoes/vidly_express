@@ -1,0 +1,3 @@
+{"level":"info","message":"The server is listening on port 3000...","timestamp":"2021-05-08T20:02:57.379Z"}
+{"level":"info","message":"Connected to mongoDB: vidly!","timestamp":"2021-05-08T20:02:57.411Z"}
+{"level":"error","message":"undefined oops","timestamp":"2021-05-08T20:02:58.380Z"}
